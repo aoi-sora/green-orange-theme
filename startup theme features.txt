@@ -1,0 +1,178 @@
+Startup Features - TOTAL ETA development of this startup theme : approximately 35 to 40 hours
+
+Rich Features/Plugins
+
+1. Can use pagination with or without wp-paginate plugin
+
+2. Plugin JWPlayer I created for wordpress which is based based JWPlayer javascript library for videos and sounds
+
+3. VideoJS built in library (as substitute)
+
+4. MediaElement JS (as substitute)
+
+5. SexyBookmarks
+
+6. Bulletproof security
+
+7. Featured Images on Both Post and Pages (wordpress feature)
+
+8. Fancybox 
+
+9. Coda Slider/Portfolio
+
+10. FancyBox on video using video raw page template
+
+11. Slider - slidesjs
+
+12. Gallery
+
+13. SEO Ready
+
+14. Contact Form 7
+
+15. WP Customer Reviews (looking forward to other plugins such as Testimonials, GD Rating)
+
+16. Video Preview support on templates
+
+17. Top Sliding Image Admnistration
+
+18. Portfolio Administration
+
+
+
+Theme Settings Features
+
+1. Menus and Widgets
+
+2. Page Layout on all WP template files, page-template native feature by wordpress is still kept available.
+
+3. 
+
+4. Supports widgets based position : head, top, middle, left & right sidebar, footer
+
+5. Toggling of widgets per post/page settings
+
+6. Responsive/Mobile Ready TO DO 
+
+7. CSS Class and ID Custom Settings, having the templates section (top, header, banner, sidebars, footers ) ready (get_options()) for initial CSS/HTML Design in order to speed up visualizing how an html slice looks like. and in order for me to speed up copying and pasting the sections into wordpress templates.
+
+Page/Content Structure/Template Files
+
+1. Blog
+
+2. Video Page
+
+3. Archive
+
+
+Coding / Optimization :
+
+1. all calls to link and script tag should have ?ver=<date> prefixed in order to force browser refresh whenever js or css changes
+
+
+Theme Limitation/Exception
+
+1. Handling Editor CSS and Frontend consistency -> manual css encoding or merging the css from style.css into editor-style.css
+
+
+TO DO 9/16/2012 - use Startup Playground folder as basis
+
+- on theme options layout section add textboxes corresponding to the css ids underneath each layout image
+- on sidebar left and sidebar right options, add textbox for # of sidebars. Up to 2 sidebars are only allowed
+
+- consideration : check if layout set per post / page is specified, if not use the one set in the theme
+- this includes adding meta box or layout choice in the Startup Theme Options (see startup playground folder)
+
+- in Layout remove  two sidebars on left and two sidebars on right, the valid layouts are : no sidebar,
+sidebar on left, sidebar on right, sidebars on both sides
+
+Template coding:
+
+// actual css id   inputted in theme options and id are defined as rules in style.css
+
+function get_css_wrap_id($name) {
+
+$name= "{$name}-wrapper" // USE THIS IN ARRAY INDEXING
+
+x['content-wrapper'] = content 
+x['dynamic-content-wrapper']    =  post-content
+x['left-wrapper']               =  whatever css id
+x['left-sidebar-1-wrapper']     =  whatever css id
+x['left-sidebar-2-wrapper']     =  whatever css id
+x['right-wrapper']              = whatever css id
+x['right-sidebar-1-wrapper']    =  whatever css id
+x['right-sidebar-2-wrapper']    =  whatever css id
+
+}
+  
+
+single.php, page.php , and other template files.. :
+    <div id="<?php get_css_wrap_id('content');?>" class="content-wrapper">
+        <?php if(get_option('theme-layout') == 'sidebar-left' || get_option('theme-layout') == 'sidebar-both') : ?>
+            <?php get_sidebar('left'); ?>
+        <?php endif ; ?>
+ 
+        <div id="<?php get_css_wrap_id('dynamic-content');?>" class="dynamic-content-wrapper">
+        </div>
+        
+        <?php if(get_option('theme-layout') == 'sidebar-right' || get_option('theme-layout') == 'sidebar-both') : ?>
+            <?php get_sidebar('right'); ?>
+        <?php endif;?>
+
+    </div><!-- /.content-wrapper -->
+
+
+ 
+sidebar-left.php
+<?php if(get_option('theme-sidebars-left') == 2) :?>
+    <div id="<?php get_css_wrap_id('left');?>" class="left-wrapper">
+<?php endif; ?>
+
+    <div id="<?php get_css_wrap_id('left-sidebar-1');?>" class="left-sidebar-1-wrapper">
+    </div><!-- /.left-sidebar-1-wrapper -->
+    
+    <?php if(get_option('theme-sidebars-left') == 2) :?>
+        <div id="<?php get_css_declare('left-sidebar-2');?>" class="left-sidebar-2-wrapper">
+        </div><!-- /.left-sidebar-1-wrapper -->
+    <?php endif; ?>
+
+<?php if(get_option('theme-sidebars-left') == 2) :?>
+    </div><!-- ./left-wrapper -->
+<?php endif; ?>
+
+sidebar-right.php
+<?php if(get_option('theme-sidebars-right') == 2) :?>
+    <div id="<?php get_css_wrap_id('right');?>" class="right-wrapper">
+<?php endif; ?>
+
+    <div id="<?php get_css_wrap_id('right-sidebar-1');?>" class="right-sidebar-1-wrapper">
+    </div><!-- /.right-sidebar-1-wrapper -->
+    
+    <?php if(get_option('theme-sidebars-left') == 2) :?>
+        <div id="<?php get_css_declare('right-sidebar-2');?>" class="right-sidebar-2-wrapper">
+        </div><!-- /.right-sidebar-1-wrapper -->
+    <?php endif; ?>
+
+<?php if(get_option('theme-sidebars-left') == 2) :?>
+    </div><!-- ./right-wrapper -->
+<?php endif; ?>
+
+TODO 9/25/2012
+
+add_filter('mce_buttons',callback)
+add thickbox to anchor and the href set it to the one used by wordpress
+
+Use Wordpress' Media Upload Dialog box
+<a onclick="return false;" title="Add Media" id="content-add_media" class="thickbox add_media"
+href="http://dev/wp01/wp-admin/media-upload.php?post_id=151&amp;TB_iframe=1&amp;width=640&amp;height=200">
+Upload/Insert <img width="15" height="15" src="http://dev/wp01/wp-admin/images/media-button.png?ver=20111005"></a>
+
+Use Wordpress' Image Edit
+<a class="thickbox"
+  href="http://dev/wp01/wp-content/plugins/image-store/admin/image-edit.php?editimage=161&amp;_wpnonce=143ac2435d&amp;TB_iframe=true&amp;width=640&amp;height=200">
+  Edit</a>
+  
+  Use of wp_editor() to obtain tinyMCE editor used by Wordpress Post Editor
+
+
+ 

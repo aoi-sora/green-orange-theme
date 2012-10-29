@@ -1,0 +1,350 @@
+wp_nav_menu
+
+walker = D:\xampp\htdocs\startup\wp-admin\includes\nav-menu.php
+
+
+<?php wp_nav_menu( $args ); ?>
+
+  <?php $defaults = array(
+  'theme_location'  => ,
+  'menu'            => , 
+  'container'       => 'div', 
+  'container_class' => 'menu-{menu slug}-container', 
+  'container_id'    => ,
+  'menu_class'      => 'menu', 
+  'menu_id'         => ,
+  'echo'            => true,
+  'fallback_cb'     => 'wp_page_menu',
+  'before'          => ,
+  'after'           => ,
+  'link_before'     => ,
+  'link_after'      => ,
+  'items_wrap'      => '<ul id=\"%1$s\" class=\"%2$s\">%3$s</ul>',
+  'depth'           => 0,
+  'walker'          => );
+?>
+
+<?php wp_nav_menu( $defaults ); ?> 
+Parameters
+
+$theme_location
+    (string) (optional) the location in the theme to be used--must be registered with register_nav_menu() in order to be selectable by the user
+
+        Default: None 
+
+$menu
+    (string) (optional) The menu that is desired; accepts (matching in order) id, slug, name
+
+        Default: None 
+
+$container
+    (string) (optional) Whether to wrap the ul, and what to wrap it with. Allowed tags are div and nav. Use false for no container e.g. container => false
+
+        Default: div 
+
+$container_class
+    (string) (optional) the class that is applied to the container
+
+        Default: menu-{menu slug}-container 
+
+$container_id
+    (string) (optional) The ID that is applied to the container
+
+        Default: None 
+
+$menu_class
+    (string) (optional) CSS class to use for the containing div element which forms the default menu, or the ul element when a custom menu is configured in the admin interface
+
+        Default: menu 
+
+$menu_id
+    (string) (optional) The ID that is applied to the ul element which forms the menu
+
+        Default: menu slug, incremented 
+
+$echo
+    (boolean) (optional) Whether to echo the menu or return it. For returning menu use '0'
+
+        Default: true 
+
+$fallback_cb
+    (string) (optional) If the menu doesn't exist, the fallback function to use. Set to false for no fallback. 
+
+Note: passes $args to the custom function.
+
+        Default: wp_page_menu 
+
+$before
+    (string) (optional) Output text before the <a> of the link
+
+        Default: None 
+
+$after
+    (string) (optional) Output text after the </a> of the link
+
+        Default: None 
+
+$link_before
+    (string) (optional) Output text before the link text
+
+        Default: None 
+
+$link_after
+    (string) (optional) Output text after the link text
+
+        Default: None 
+
+$items_wrap
+    (string) (optional) Whatever to wrap the items with an ul, and how to wrap them with
+
+        Default: None 
+
+$depth
+    (integer) (optional) how many levels of the hierarchy are to be included where 0 means all
+
+        Default: 0 
+
+$walker
+    (object) (optional) Custom walker object to use (Note: You must pass an actual object to use, not a string)
+
+        Default: new Walker_Nav_Menu
+	
+	
+ Default example
+
+<div class="access">
+  <?php wp_nav_menu(); ?>
+</div>
+
+Targeting a specific Menu
+
+<?php wp_nav_menu( array('menu' => 'Project Nav' )); ?>
+
+Used in the Twenty Ten theme
+
+<div id="access" role="navigation">
+
+    <?php /*
+
+    Allow screen readers / text browsers to skip the navigation menu and
+    get right to the good stuff. */ ?>
+
+    <div class="skip-link screen-reader-text">
+        <a href="#content" title="<?php esc_attr_e( 'Skip to content', 'twentyten' ); ?>">
+        <?php _e( 'Skip to content', 'twentyten' ); ?></a>
+    </div>
+
+    <?php /*
+
+    Our navigation menu.  If one isn't filled out, wp_nav_menu falls
+    back to wp_page_menu.  The menu assigned to the primary position is
+    the one used.  If none is assigned, the menu with the lowest ID is
+    used. */
+
+    wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' ) ); ?>
+
+</div><!-- #access -->
+
+Removing the Navigation Container
+
+In order to remove navigation container, theme location specified in functions.php and used among arguments in function wp_nav_menu ( eg. 'theme_location' => 'primary-menu' ) must have a menu assigned to it in administration! Othervise argument 'container' => 'false' is ignored.
+
+<?php
+function my_wp_nav_menu_args( $args = '' )
+{
+	$args['container'] = false;
+	return $args;
+} // function
+
+add_filter( 'wp_nav_menu_args', 'my_wp_nav_menu_args' );
+?>
+
+OR
+
+<?php wp_nav_menu( array( 'container' => '' ) ); ?>
+
+Removing the ul wrap
+
+This example will remove the ul around the list items.
+
+<?php wp_nav_menu( array( 'items_wrap' => '%3$s' ) ); ?>
+
+Adding a Word at the Beginning of the Menu
+
+This example will allow you to add the word of your choice to the beginning of your menu as a list item. In this example, the word "Menu:" is added at the beginning. You may want to set an id on the list item ("item-id" in this example) so that you can use CSS to style it.
+
+<?php wp_nav_menu( array( 'theme_location' => 'primary', 'items_wrap' => '<ul><li id="item-id">Menu: </li>%3$s</ul>' ) ); ?>
+
+Adding Conditional Classes to Menu Items
+
+This example would let you add a custom class to a menu item based on the condition you specify. Don't forget to change the condition.
+
+<?php
+add_filter('nav_menu_css_class' , 'special_nav_class' , 10 , 2);
+function special_nav_class($classes, $item){
+     if(is_single() && $item->title == "Blog"){ //Notice you can change the conditional from is_single() and $item->title
+             $classes[] = "special-class";
+     }
+     return $classes;
+}
+?>
+
+I was trying to customize the look of a specific menu item: Blog on single post pages. After rethinking the code above, it is much simpler to use the body class .single if you can. In my case it works. But nonetheless, the above code is really handy.
+Using a Custom Walker Function
+
+For deeper conditional classes, you'll need to use a custom walker function (created in the 'walker' => new Your_Walker_Function argument).
+
+The easiest way to build a new walker function is to copy the default class (Walker_Nav_Menu) from \wp-includes\nav-menu-template.php and simply customize what you need.
+
+You can find an example that adds menu-depth and even/odd classes to both ul and li elements here.
+Different menus for logged-in users
+
+This example would cause a menu to show for logged-in users and a different menu for users not logged-in.
+
+<?php
+if ( is_user_logged_in() ) {
+     wp_nav_menu( array( 'theme_location' => 'logged-in-menu' ) );
+} else {
+     wp_nav_menu( array( 'theme_location' => 'logged-out-menu' ) );
+}
+?>
+
+
+How to add a parent class for menu item
+
+Soemtimes you may need a "parent stat" class for all menu item which has sub menus.
+
+add_filter('wp_nav_menu_objects', function ($items) {
+    $hasSub = function ($menu_item_id, &$items) {
+        foreach ($items as $item) {
+            if ($item->menu_item_parent && $item->menu_item_parent==$menu_item_id) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    foreach ($items as &$item) {
+        if ($hasSub($item->ID, &$items)) {
+            $item->classes[] = 'menu-parent-item'; // all elements of field "classes" of a menu item get join together and render to class attribute of <li> element in HTML
+        }
+    }
+    return $items;    
+});
+
+Menu Item CSS Classes
+
+The following classes are applied to menu items, i.e. to the HTML <li> tags, generated by wp_nav_menu():
+All Menu Items
+
+    .menu-item
+    This class is added to every menu item.
+    .menu-item-object-{object}
+    This class is added to every menu item, where {object} is either a post type or a taxonomy.
+        .menu-item-object-category
+        This class is added to menu items that correspond to a category.
+        .menu-item-object-tag
+        This class is added to menu items that correspond to a tag.
+        .menu-item-object-page
+        This class is added to menu items that correspond to static pages.
+        .menu-item-object-{custom}
+        This class is added to menu items that correspond to a custom post type or a custom taxonomy. 
+    .menu-item-type-{type}
+    This class is added to every menu item, where {type} is either "post_type" or "taxonomy".
+        .menu-item-type-post_type
+        This class is added to menu items that correspond to post types: i.e. static pages or custom post types.
+        .menu-item-type-taxonomy
+        This class is added to menu items that correspond to taxonomies: i.e. categories, tags, or custom taxonomies. 
+
+Current-Page Menu Items
+
+    .current-menu-item
+    This class is added to menu items that correspond to the currently rendered page. 
+
+Current-Page Parent Menu Items
+
+    .current-menu-parent
+    This class is added to menu items that correspond to the hierarchical parent of the currently rendered page.
+    .current-{object}-parent
+    This class is added to menu items that correspond to the hierachical parent of the currently rendered object, where {object} corresponds to the the value used for .menu-item-object-{object}.
+    .current-{type}-parent
+    This class is added to menu items that correspond to the hierachical parent of the currently rendered type, where {type} corresponds to the the value used for .menu-item-type-{type}. 
+
+Current-Page Ancestor Menu Items
+
+    .current-menu-ancestor
+    This class is added to menu items that correspond to a hierarchical ancestor of the currently rendered page.
+    .current-{object}-ancestor
+    This class is added to menu items that correspond to a hierachical ancestor of the currently rendered object, where {object} corresponds to the the value used for .menu-item-object-{object}.
+    .current-{type}-ancestor
+    This class is added to menu items that correspond to a hierachical ancestor of the currently rendered type, where {type} corresponds to the the value used for .menu-item-type-{type}. 
+
+Site Front Page Menu Items
+
+    .menu-item-home
+    This class is added to menu items that correspond to the site front page. 
+
+Backward Compatibility with wp_page_menu()
+
+The following classes are added to maintain backward compatibility with the wp_page_menu() function output:
+
+    .page_item
+    This class is added to menu items that correspond to a static page.
+    .page-item-$ID
+    This class is added to menu items that correspond to a static page, where $ID is the static page ID.
+    .current_page_item
+    This class is added to menu items that correspond to the currently rendered static page.
+    .current_page_parent
+    This class is added to menu items that correspond to the hierarchical parent of the currently rendered static page.
+    .current_page_ancestor
+    This class is added to menu items that correspond to a hierarchical ancestor of the currently rendered static page. 	
+
+
+
+ <?php register_sidebar( $args ); ?>
+Default Usage
+
+<?php $args = array(
+	'name'          => sprintf(__('Sidebar %d'), $i ),
+	'id'            => 'sidebar-$i',
+	'description'   => '',
+	'before_widget' => '<li id="%1$s" class="widget %2$s">',
+	'after_widget'  => '</li>',
+	'before_title'  => '<h2 class="widgettitle">',
+	'after_title'   => '</h2>' ); ?>
+
+Parameters
+
+args
+    (string/array) (optional) Builds Sidebar based off of 'name' and 'id' values.
+
+        Default: None 
+
+        name - Sidebar name (default is localized 'Sidebar' and numeric ID).
+        id - Sidebar id - Must be all in lowercase, with no spaces (default is a numeric auto-incremented ID).
+        description - Text description of what/where the sidebar is. Shown on widget management screen. (Since 2.9) (default: empty)
+        class - CSS class name to assign to the widget HTML (default: empty).
+        before_widget - HTML to place before every widget(default: '<li id="%1$s" class="widget %2$s">') Note: uses sprintf for variable substitution
+        after_widget - HTML to place after every widget (default: "</li>\n").
+        before_title - HTML to place before every title (default: <h2 class="widgettitle">).
+        after_title - HTML to place after every title (default: "</h2>\n"). 
+
+The optional args parameter is an associative array that will be passed as a first argument to every active widget callback. (If a string is passed instead of an array, it will be passed through parse_str() to generate an associative array.) The basic use for these arguments is to pass theme-specific HTML tags to wrap the widget and its title.
+Notes
+
+    Calling register_sidebar() multiple times to register a number of sidebars is preferable to using register_sidebars() to create a bunch in one go, because it allows you to assign a unique name to each sidebar (eg: “Right Sidebar”, “Left Sidebar”). Although these names only appear in the admin interface it is a best practice to name each sidebar specifically, giving the administrative user some idea as to the context for which each sidebar will be used. 
+
+    The default before/after values are intended for themes that generate a sidebar marked up as a list with h2 titles. This is the convention we recommend for all themes and any theme built in this way can simply register sidebars without worrying about the before/after tags. If, for some compelling reason, a theme cannot be marked up in this way, these tags must be specified when registering sidebars. It is recommended to copy the id and class attributes verbatim so that an internal sprintf call can work and CSS styles can be applied to individual widgets. 
+
+Example
+
+This will create a sidebars named "RightSideBar" with <h1> and </h1> before and after the title:
+
+register_sidebar(array(
+  'name' => __( 'Right Hand Sidebar' ),
+  'id' => 'right-sidebar',
+  'description' => __( 'Widgets in this area will be shown on the right-hand side.' ),
+  'before_title' => '<h1>',
+  'after_title' => '</h1>'
+));
+

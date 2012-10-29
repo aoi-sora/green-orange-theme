@@ -1,0 +1,87 @@
+#slider {
+    width: 940px;
+    margin: 0 auto;
+    position: relative;
+}
+
+ 
+
+
+.scroll {
+    height: 480px;
+    width: 940px;
+    overflow: auto;
+   /* overflow-x: hidden; */
+    position: relative;     
+    clear: left;
+	 /*background: url(../coda-slider/images/templatemo_content.jpg) repeat-y;*/
+	/* 2nd version  */
+	/* background:url("../coda-slider/images/1.png") no-repeat scroll 0 0 black; */
+    /* version 3 */
+	/*background:url("../coda-slider/images/2.png") repeat-x scroll 0 0 white; */
+}
+
+.scrollContainer div.panel {
+    padding: 20px 50px;
+    height: 440px;
+    width: 840px;	    	
+}
+
+ 
+
+
+
+
+ul.navigation {
+	float: left;
+	width: 560px;
+	height: 40px;
+    list-style: none;
+    margin: 22px 0 0 0;
+    padding: 0;
+}
+
+ul.navigation li {
+    display: inline;
+    margin-right: 10px;
+}
+
+ul.navigation a {
+	float: left;
+	display: block;
+	width: 104px;
+	height: 30px;
+	padding-top: 9px;
+	color: #FB4;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+    text-decoration: none;
+}
+
+ul.navigation a:hover, ul.navigation a.selected {
+	color: #fff;
+	background: url(../coda-slider/images/templatemo_menu_hover.jpg) no-repeat;
+}
+
+ul.navigation a:focus {
+    outline: none;
+}
+
+.scrollButtons {
+    position: absolute;
+    top: 300px;
+    cursor: pointer;
+}
+
+.scrollButtons.left {
+    left: -50px;
+}
+
+.scrollButtons.right {
+    right: -50px;
+}
+
+.hide {
+    display: none;
+}
